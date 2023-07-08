@@ -27,7 +27,7 @@ mlb = (
 st.write(mlb.shape)
 st.write(mlb.head())
 
-st.write("## 投球座標の分布")
+st.write("## 投球分布")
 
 # 見逃しかつファストボールに絞る＆重いのでランダムサンプリングしとく
 dist = (
