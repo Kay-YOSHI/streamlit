@@ -7,7 +7,7 @@ from plotnine import *
 from dfply import *
 import math
 
-st.write("#### MLBにおける投球分布")
+st.write("#### MLBにおけるストライク/ボール判定の分布")
 
 st.write(
     "##### Data : Statcast pitch-by-pitch data on all regular season games in 2019"
@@ -56,8 +56,6 @@ mlb["strikes"] = mlb["strikes"].astype(str)
 mlb["count"] = mlb["balls"].str.cat(mlb["strikes"], sep="-")
 dist_tmp = mlb[mlb["count"] == bs_count]
 
-st.write("##### 投球分布")
-
 # 見逃しかつファストボールに絞る
 dist = (
     dist_tmp
@@ -94,7 +92,7 @@ pdist = (
     + scale_x_continuous(name="Horizontal location (ft.)", limits=(-2.0, 2.0))
     + scale_y_continuous(name="Vertical location (ft.)", limits=(0.0, 5.0))
     + labs(
-        title="Pitch distribution",
+        title="Pitch-call distribution",
         subtitle="(Randomly sampled 10,000 obs.)",
         caption="*Catcher's perspective.",
     )
