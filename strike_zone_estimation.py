@@ -7,10 +7,11 @@ from plotnine import *
 from dfply import *
 import math
 
-st.write("## MLBにおける投球分布の可視化")
+st.write("#### MLBにおける投球分布")
 
-st.write("### データ取得")
-st.write("#### Statcast pitch-by-pitch data on all regular season games in 2019")
+st.write(
+    "##### Data : Statcast pitch-by-pitch data on all regular season games in 2019"
+)
 
 # Statcast pitch-by-pitch data on all regular season games in 2019
 mlb2019 = statcast(start_dt="2019-03-28", end_dt="2019-04-30")
@@ -26,26 +27,43 @@ mlb = (
     >> filter_by(X.strikes.notnull())
 )
 
-# 概観
+# データ概観
 st.write(mlb.head())
 
 ## サイドパネル（インプット部）
 st.sidebar.header("Ball-Strike Count")
 
 ### 入力（ラジオボタン）
-ball_count = st.sidebar.radio("balls", (0, 1, 2, 3), horizontal=True)
-strike_count = st.sidebar.radio("strikes", (0, 1, 2), horizontal=True)
+bs_count = st.sidebar.radio(
+    "B-S",
+    (
+        "0-0",
+        "0-1",
+        "0-2",
+        "1-0",
+        "1-1",
+        "1-2",
+        "2-0",
+        "2-1",
+        "2-2",
+        "3-0",
+        "3-1",
+        "3-2",
+    ),
+)
+mlb["balls"] = mlb["balls"].astype(str)
+mlb["strikes"] = mlb["strikes"].astype(str)
+mlb["count"] = mlb["balls"].str.cat(mlb["strikes"], sep="-")
+dist_tmp = mlb[mlb["count"] == bs_count]
 
-st.write("### 投球分布")
+st.write("##### 投球分布")
 
-# 見逃しかつファストボールに絞る＆重いのでランダムサンプリングしとく
+# 見逃しかつファストボールに絞る
 dist = (
-    mlb
+    dist_tmp
     >> filter_by(X.pitch_type == "FF")
     >> filter_by((X.description == "called_strike") | (X.description == "ball"))
-    >> filter_by((X.balls == ball_count) & (X.strikes == strike_count))
     >> mutate(code=if_else(X.description == "called_strike", "Called Strike", "Ball"))
-    >> sample(n=10000)
 )
 
 # ルールブック上のストライクゾーン
