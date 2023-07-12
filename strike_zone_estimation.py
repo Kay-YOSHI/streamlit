@@ -33,8 +33,8 @@ st.write(mlb.head())
 st.sidebar.header("Ball-Strike Count")
 
 ### 入力（ラジオボタン）
-ball_count = st.sidebar.radio("balls", (0, 1, 2, 3))
-strike_count = st.sidebar.radio("strikes", (0, 1, 2))
+ball_count = st.sidebar.radio("balls", (0, 1, 2, 3), horizontal=True)
+strike_count = st.sidebar.radio("strikes", (0, 1, 2), horizontal=True)
 
 st.write("### 投球分布")
 
@@ -43,9 +43,8 @@ dist = (
     mlb
     >> filter_by(X.pitch_type == "FF")
     >> filter_by((X.description == "called_strike") | (X.description == "ball"))
+    >> filter_by((X.balls == ball_count) & (X.strikes == strike_count))
     >> mutate(code=if_else(X.description == "called_strike", "Called Strike", "Ball"))
-    >> unite("count", X.balls, X.strikes, sep="-", remove=False, na_action="maintain")
-    # >> filter_by((X.balls == ball_count) and (X.strikes == strike_count))
     >> sample(n=10000)
 )
 
