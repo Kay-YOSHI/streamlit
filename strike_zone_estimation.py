@@ -7,9 +7,10 @@ from plotnine import *
 from dfply import *
 import math
 
-st.write("# MLBにおける投球分布の可視化")
+st.write("## MLBにおける投球分布の可視化")
 
-st.write("## データ取得")
+st.write("### データ取得")
+st.write("#### Statcast pitch-by-pitch data on all regular season games in 2019")
 
 # Statcast pitch-by-pitch data on all regular season games in 2019
 mlb2019 = statcast(start_dt="2019-03-28", end_dt="2019-04-30")
@@ -26,10 +27,16 @@ mlb = (
 )
 
 # 概観
-st.write(mlb.shape)
 st.write(mlb.head())
 
-st.write("## 投球分布")
+## サイドパネル（インプット部）
+st.sidebar.header("Ball-Strike Count")
+
+### 入力（ラジオボタン）
+ball_count = st.sidebar.radio("balls", (0, 1, 2, 3))
+strike_count = st.sidebar.radio("strikes", (0, 1, 2))
+
+st.write("### 投球分布")
 
 # 見逃しかつファストボールに絞る＆重いのでランダムサンプリングしとく
 dist = (
@@ -38,7 +45,7 @@ dist = (
     >> filter_by((X.description == "called_strike") | (X.description == "ball"))
     >> mutate(code=if_else(X.description == "called_strike", "Called Strike", "Ball"))
     >> unite("count", X.balls, X.strikes, sep="-", remove=False, na_action="maintain")
-    # >> filter_by(X.count == "0-2")
+    # >> filter_by((X.balls == ball_count) and (X.strikes == strike_count))
     >> sample(n=10000)
 )
 
