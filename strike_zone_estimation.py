@@ -7,7 +7,7 @@ from plotnine import *
 from dfply import *
 import math
 
-st.write("# MLBにおけるストライクゾーンの推定＆可視化")
+st.write("# MLBにおける投球分布の可視化")
 
 st.write("## データ取得")
 
@@ -21,6 +21,8 @@ mlb = (
     >> filter_by(X.plate_z.notnull())
     >> filter_by(X.sz_top.notnull())
     >> filter_by(X.sz_bot.notnull())
+    >> filter_by(X.balls.notnull())
+    >> filter_by(X.strikes.notnull())
 )
 
 # 概観
@@ -35,6 +37,8 @@ dist = (
     >> filter_by(X.pitch_type == "FF")
     >> filter_by((X.description == "called_strike") | (X.description == "ball"))
     >> mutate(code=if_else(X.description == "called_strike", "Called Strike", "Ball"))
+    >> unite("count", X.balls, X.strikes, sep="-", remove=False, na_action="maintain")
+    # >> filter_by(X.count == "0-2")
     >> sample(n=10000)
 )
 
