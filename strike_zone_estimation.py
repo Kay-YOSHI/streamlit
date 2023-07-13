@@ -9,9 +9,7 @@ import math
 
 st.write("#### MLBにおけるストライク/ボール判定の分布")
 
-st.write(
-    "##### Data : Statcast pitch-by-pitch data on all regular season games in 2019"
-)
+st.write("##### Data : Pitch-by-pitch data from Statcast")
 
 # Statcast pitch-by-pitch data on all regular season games in 2019
 mlb2019 = statcast(start_dt="2019-03-28", end_dt="2019-04-30")
