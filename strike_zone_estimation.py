@@ -12,7 +12,7 @@ st.write("#### MLBにおけるストライク/ボール判定の分布")
 st.write("##### Data : Pitch-by-pitch data from Statcast")
 
 # Statcast pitch-by-pitch data on all regular season games in 2019
-mlb2019 = statcast(start_dt="2019-03-28", end_dt="2019-04-30")
+mlb2019 = statcast(start_dt="2019-03-28", end_dt="2019-04-06")
 
 # 欠損値落としとく
 mlb = (
@@ -91,7 +91,7 @@ pdist = (
     + scale_y_continuous(name="Vertical location (ft.)", limits=(0.0, 5.0))
     + labs(
         title="Pitch-call distribution",
-        subtitle="(Randomly sampled 10,000 obs.)",
+        subtitle="(Fastballs only)",
         caption="*Catcher's perspective.",
     )
     + theme_bw()
